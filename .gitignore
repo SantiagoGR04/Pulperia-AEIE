@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+
+# Virtual environment
+venv/
+.env/
+.env.local
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Data files (auto-generated at runtime)
+Pulperia_Data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
