@@ -1,6 +1,4 @@
-"""Pulpería IE — Punto de entrada
-App de escritorio para gestión de pulpería
-Temática: Escuela de Ingeniería Eléctrica (azul / ámbar)
+"""Pulpería AEIE - App de escritorio para gestión de pulpería
 """
 import flet as ft
 from database.excel_db import inicializar
@@ -53,9 +51,8 @@ def main(page: ft.Page):
         content=ft.Column([
             ft.Container(
                 content=ft.Column([
-                    ft.Icon(ft.Icons.BOLT, size=36, color=Colors.ACCENT),
-                    ft.Text("Pulpería IE", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                    ft.Text("Ing. Eléctrica", size=12, color=ft.Colors.GREY_400),
+                    ft.Image(src="images/logo_aeie.png"),
+                    ft.Text("Pulpería AEIE", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                 ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
                 padding=20, bgcolor=Colors.PRIMARY,
             ),
@@ -77,10 +74,11 @@ def main(page: ft.Page):
                     title=ft.Text("Reportes", color=ft.Colors.WHITE),
                     on_click=lambda e: cambiar_vista("reportes")),
             ], spacing=0)),
+
             ft.Container(
+
                 content=ft.Row([
-                    ft.Icon(ft.Icons.ELECTRIC_BOLT, size=14, color=Colors.ACCENT),
-                    ft.Text("IE-UCR", size=11, color=ft.Colors.GREY_500),
+                    ft.Text("AEIE-UCR", size=11, color=ft.Colors.GREY_500),
                 ], alignment=ft.MainAxisAlignment.CENTER),
                 padding=10,
             ),

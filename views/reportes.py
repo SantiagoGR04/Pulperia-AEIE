@@ -4,8 +4,7 @@ from datetime import datetime, timedelta
 from core import ventas as vtas, productos as prods, perdidas as perd
 from theme import Colors
 from utils.dialogs import msg
-import threading, os
-from tkinter import Tk, filedialog
+import os
 from openpyxl import Workbook
 
 
@@ -22,6 +21,9 @@ class ReportesView:
             f"💰 Ganancias:  Hoy: ₡{r_hoy['ganancia']:,.0f}  |  Este mes: ₡{r_mes['ganancia']:,.0f}",
             size=16, weight=ft.FontWeight.BOLD, color=Colors.SUCCESS
         )
+        self._export_btn = ft.IconButton(ft.Icons.DOWNLOAD, icon_size=22,
+            tooltip="Exportar a Excel", on_click=lambda e: self._exportar(),
+            style=ft.ButtonStyle(color=ft.Colors.GREEN_700))
         self.stats = ft.Text("", size=14, weight=ft.FontWeight.W_600, color=Colors.PRIMARY)
         self.stats_inv = ft.Text("", size=13, color=Colors.TEXT_SEC)
 
@@ -89,6 +91,7 @@ class ReportesView:
                 ft.Container(expand=True),
                 self.stats_ganancias,
                 dd,
+                self._export_btn,
             ]),
             # Sección inventario
             ft.Text("Inventario Actual", size=16, weight=ft.FontWeight.W_600, color=Colors.PRIMARY),
@@ -147,13 +150,8 @@ class ReportesView:
             msg(self.page, "Sin datos", "No hay ventas en este período", "error")
             return
 
-        def t():
-            root = Tk(); root.withdraw()
-            fn = filedialog.asksaveasfilename(title="Guardar reporte",
-                defaultextension=".xlsx", filetypes=[("Excel files","*.xlsx")],
-                initialfile=f"reporte_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx")
-            root.destroy()
-            if not fn: return
+        def on_result(e: ft.FilePickerResultEvent):
+            if not e.path: return
             wb = Workbook()
 
             # Hoja 1: Ventas
@@ -180,13 +178,16 @@ class ReportesView:
             for ws_i in [ws, ws2]:
                 for col in ws_i.columns:
                     ws_i.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
-            wb.save(fn)
+            wb.save(e.path)
+            self.page.show_dialog(ft.AlertDialog(
+                title=ft.Text("✅ Exportado"),
+                content=ft.Text(f"Guardado: {os.path.basename(e.path)}"),
+                actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
+            ))
+            self.page.update()
 
-            def mostrar():
-                self.page.show_dialog(ft.AlertDialog(
-                    title=ft.Text("✅ Exportado"),
-                    content=ft.Text(f"Guardado: {os.path.basename(fn)}"),
-                    actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
-                ))
-            self.page.run_thread(mostrar)
-        threading.Thread(target=t, daemon=True).start()
+        picker = ft.FilePicker(on_result=on_result)
+        self.page.overlay.append(picker)
+        self.page.update()
+        picker.save_file(file_name=f"reporte_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+                         allowed_extensions=["xlsx"])

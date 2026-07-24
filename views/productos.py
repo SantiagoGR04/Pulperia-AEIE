@@ -1,8 +1,7 @@
 """Vista: Gestión de Productos"""
 import flet as ft
-import threading, os
+import os
 from datetime import datetime
-from tkinter import Tk, filedialog
 from openpyxl import Workbook
 from core import productos as prods
 from theme import Colors
@@ -17,13 +16,13 @@ class ProductosView:
     def build(self):
         self.tabla = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("ID", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Producto", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Compra (₡)", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Venta (₡)", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Stock", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Categoría", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("", size=11)),
+                ft.DataColumn(ft.Text("ID", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Producto", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Compra (₡)", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Venta (₡)", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Stock", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Categoría", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("", size=15)),
             ],
             rows=[],
             border_radius=8,
@@ -40,12 +39,15 @@ class ProductosView:
         self._cargar()
         return ft.Column([
             ft.Row([
-                ft.Text("📦 Productos", size=20, weight=ft.FontWeight.BOLD, color=Colors.PRIMARY),
+                ft.Text("📦 Productos", size=25, weight=ft.FontWeight.BOLD, color=Colors.PRIMARY),
                 ft.Container(expand=True), self.search,
 
                 ft.Button(content=ft.Text("➕ Nuevo"),
                     style=ft.ButtonStyle(bgcolor=Colors.PRIMARY, color=ft.Colors.WHITE),
                     on_click=lambda e: self._formulario(), height=48),
+                ft.IconButton(ft.Icons.DOWNLOAD, icon_size=22,
+                    tooltip="Exportar a Excel", on_click=lambda e: self._exportar(),
+                    style=ft.ButtonStyle(color=ft.Colors.GREEN_700)),
             ]),
             ft.Divider(height=2, color=Colors.ACCENT),
             ft.Container(
@@ -91,13 +93,8 @@ class ProductosView:
         self.page.show_dialog(d)
 
     def _exportar(self):
-        def t():
-            root = Tk(); root.withdraw()
-            fn = filedialog.asksaveasfilename(title="Guardar inventario",
-                defaultextension=".xlsx", filetypes=[("Excel files","*.xlsx")],
-                initialfile=f"inventario_{datetime.now().strftime('%Y%m%d')}.xlsx")
-            root.destroy()
-            if not fn: return
+        def on_result(e: ft.FilePickerResultEvent):
+            if not e.path: return
             wb = Workbook()
             ws = wb.active; ws.title = "Inventario"
             ws.append(["ID","Producto","Precio Compra","Precio Venta","Stock","Categoría"])
@@ -106,15 +103,19 @@ class ProductosView:
                           p["precio_venta"], p["stock"], p["categoria"]])
             for col in ws.columns:
                 ws.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
-            wb.save(fn)
-            def mostrar():
-                self.page.show_dialog(ft.AlertDialog(
-                    title=ft.Text("✅ Exportado"),
-                    content=ft.Text(f"Guardado: {os.path.basename(fn)}"),
-                    actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
-                ))
-            self.page.run_thread(mostrar)
-        threading.Thread(target=t, daemon=True).start()
+            wb.save(e.path)
+            self.page.show_dialog(ft.AlertDialog(
+                title=ft.Text("✅ Exportado"),
+                content=ft.Text(f"Guardado: {os.path.basename(e.path)}"),
+                actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
+            ))
+            self.page.update()
+
+        picker = ft.FilePicker(on_result=on_result)
+        self.page.overlay.append(picker)
+        self.page.update()
+        picker.save_file(file_name=f"inventario_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                         allowed_extensions=["xlsx"])
 
     def _formulario(self, pid=None):
         prod = prods.obtener(pid) if pid else None

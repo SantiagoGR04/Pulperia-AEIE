@@ -12,11 +12,11 @@ class PerdidasView:
     def build(self):
         self.tabla = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("Producto", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Cant", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Monto", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Motivo", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Fecha", size=11, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Producto", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Cant", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Monto", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Motivo", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Fecha", size=15, weight=ft.FontWeight.BOLD)),
             ],
             rows=[], border_radius=8,
             horizontal_lines=ft.BorderSide(1, ft.Colors.GREY_300),
@@ -31,7 +31,7 @@ class PerdidasView:
                 ft.Container(expand=True),
                 ft.Button(content=ft.Text("⚠️ Nueva"),
                     style=ft.ButtonStyle(bgcolor=Colors.DANGER, color=ft.Colors.WHITE),
-                    on_click=lambda e: self._formulario(), height=48),
+                    on_click=lambda e: self._formulario(), height=50),
             ]),
             ft.Divider(height=2, color=Colors.ACCENT),
             ft.Container(

@@ -19,13 +19,11 @@ VENTAS_SHEETS = {
     "ventas": ["id", "producto_id", "producto_nombre", "cantidad", "precio_unitario", "subtotal", "ganancia", "metodo_pago", "fecha", "hora"],
 }
 
-APP_NAME = "Pulpería IE"
+APP_NAME = "Pulpería AEIE"
 APP_WIDTH  = 1100
 APP_HEIGHT = 750
 
 CATEGORIAS = [
-    "Alimentos", "Bebidas", "Limpieza", "Lácteos",
-    "Panadería", "Snacks", "Higiene", "Otros"
-]
+    "Dulces", "Bebidas","Snacks","Otros"]
 
 METODOS_PAGO = ["Efectivo", "SINPE"]
