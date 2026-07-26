@@ -19,7 +19,7 @@ class ReportesView:
 
         self.stats_ganancias = ft.Text(
             f"💰 Ganancias:  Hoy: ₡{r_hoy['ganancia']:,.0f}  |  Este mes: ₡{r_mes['ganancia']:,.0f}",
-            size=16, weight=ft.FontWeight.BOLD, color=Colors.SUCCESS
+            size=20, weight=ft.FontWeight.BOLD, color=Colors.SUCCESS
         )
         self._export_btn = ft.IconButton(ft.Icons.DOWNLOAD, icon_size=22,
             tooltip="Exportar a Excel", on_click=lambda e: self._exportar(),
@@ -36,17 +36,17 @@ class ReportesView:
 
         inventario_tabla = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("Producto", size=10, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Stock", size=10, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Compra", size=10, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Venta", size=10, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Ganancia/u", size=10, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Valor Total", size=10, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Producto", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Stock", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Compra", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Venta", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Ganancia/u", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Valor Total", size=15, weight=ft.FontWeight.BOLD)),
             ],
             rows=[],
             border_radius=8,
             horizontal_lines=ft.BorderSide(1, ft.Colors.GREY_300),
-            column_spacing=12,
+            column_spacing=90,
         )
 
         inv_rows = []
@@ -70,18 +70,18 @@ class ReportesView:
 
         self.tabla = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("Fecha", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Hora", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Producto", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Cant", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Precio", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Pago", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Subtotal", size=11, weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Ganancia", size=11, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Fecha", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Hora", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Producto", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Cant", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Precio", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Pago", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Subtotal", size=15, weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("Ganancia", size=15, weight=ft.FontWeight.BOLD)),
             ],
             rows=[], border_radius=8,
             horizontal_lines=ft.BorderSide(1, ft.Colors.GREY_300),
-            column_spacing=15,
+            column_spacing=60,
         )
 
         self._filtrar("Hoy")
@@ -128,7 +128,7 @@ class ReportesView:
 
         self.stats.value = (
             f"📊 {periodo}: {len(self._filtradas)} ventas | "
-            f"₡{r['subtotal']:,.0f} | 💰 ₡{r['ganancia']:,.0f} gana\n"
+            f"₡{r['subtotal']:,.0f} | 💰 ₡{r['ganancia']:,.0f} gana | "
             f"💵 Efectivo: ₡{r['efectivo']:,.0f}  |  💳 SINPE: ₡{r['sinpe']:,.0f}"
         )
 

@@ -1,36 +1,36 @@
 """Lógica de negocio — Productos"""
-from database.excel_db import todos, insertar, actualizar, eliminar
+from database.excel_db import todos_productos, insertar_producto, actualizar_producto, eliminar_producto
 
 
 def listar():
-    return todos("inventario", "productos")
+    return todos_productos()
 
 
 def listar_con_stock():
-    return [p for p in todos("inventario", "productos") if p["stock"] > 0]
+    return [p for p in todos_productos() if p["stock"] > 0]
 
 
 def obtener(pid):
-    for p in todos("inventario", "productos"):
+    for p in todos_productos():
         if p["id"] == pid:
             return p
     return None
 
 
 def crear(nombre, precio_compra, precio_venta, stock, categoria):
-    prods = todos("inventario", "productos")
+    prods = todos_productos()
     nid = max((p["id"] for p in prods), default=0) + 1
-    insertar("inventario", "productos", [nid, nombre, precio_compra, precio_venta, stock, categoria])
+    insertar_producto([nid, nombre, precio_compra, precio_venta, stock, categoria])
     return nid
 
 
 def editar(pid, **campos):
     for k, v in campos.items():
-        actualizar("inventario", "productos", pid, k, v)
+        actualizar_producto(pid, k, v)
 
 
 def eliminar_por_id(pid):
-    eliminar("inventario", "productos", pid)
+    eliminar_producto(pid)
 
 
 def buscar(filtro=""):
@@ -40,11 +40,7 @@ def buscar(filtro=""):
     return [p for p in listar() if f in p["nombre"].lower()]
 
 
-def stock_bajo(limite=3):
-    return [p for p in listar() if (p["stock"] or 0) <= limite]
-
-
 def descontar_stock(pid, cantidad):
     prod = obtener(pid)
     if prod:
-        actualizar("inventario", "productos", pid, "stock", prod["stock"] - cantidad)
+        actualizar_producto(pid, "stock", prod["stock"] - cantidad)

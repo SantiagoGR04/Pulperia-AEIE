@@ -27,7 +27,7 @@ class ProductosView:
             rows=[],
             border_radius=8,
             horizontal_lines=ft.BorderSide(1, ft.Colors.GREY_300),
-            column_spacing=25,
+            column_spacing=60,
         )
 
         self.search = ft.TextField(

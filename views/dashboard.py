@@ -16,8 +16,6 @@ class DashboardView:
         r_hoy = vtas.resumen_hoy()
         r_global = vtas.resumen_global()
         perdidas_total = perd.total_monto()
-        bajo_stock = len(prods.stock_bajo(3))
-
         def _card(icon, label, valor, bg, icon_color=Colors.ACCENT):
             return ft.Container(
                 content=ft.Column([
@@ -46,8 +44,6 @@ class DashboardView:
                 card(ft.Column([
                     ft.Text("📋 Resumen Rápido", size=16, weight=ft.FontWeight.BOLD, color=Colors.PRIMARY),
                     ft.Divider(),
-                    ft.Text(f"🔴 Stock bajo (≤3): {bajo_stock}",
-                            color=Colors.DANGER if bajo_stock > 0 else Colors.TEXT_SEC),
                     ft.Text(f"💰 Efectivo hoy: ₡{r_hoy['efectivo']:,.0f}"),
                     ft.Text(f"💳 SINPE hoy: ₡{r_hoy['sinpe']:,.0f}"),
                     ft.Text(f"📦 Total ventas: {sum(1 for _ in vtas.listar())}"),

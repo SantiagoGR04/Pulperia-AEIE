@@ -1,17 +1,17 @@
 """Lógica de negocio — Ventas"""
 from datetime import datetime as dt
-from database.excel_db import todos, insertar
+from database.excel_db import todas_ventas, insertar_venta
 
 
 def registrar(pid, nombre, cantidad, precio_venta, precio_compra, metodo_pago):
     subtotal = cantidad * precio_venta
     ganancia = cantidad * (precio_venta - precio_compra)
-    ventas = todos("ventas", "ventas")
+    ventas = todas_ventas()
     nid = max((v["id"] for v in ventas), default=0) + 1
     ahora = dt.now()
     fecha = ahora.strftime("%d/%m/%Y")
     hora = ahora.strftime("%H:%M")
-    insertar("ventas", "ventas", [
+    insertar_venta([
         nid, pid, nombre, cantidad, precio_venta,
         subtotal, ganancia, metodo_pago, fecha, hora
     ])
@@ -19,11 +19,11 @@ def registrar(pid, nombre, cantidad, precio_venta, precio_compra, metodo_pago):
 
 
 def listar():
-    return todos("ventas", "ventas")
+    return todas_ventas()
 
 
 def listar_por_periodo(inicio):
-    ventas = todos("ventas", "ventas")
+    ventas = todas_ventas()
     return [v for v in ventas if _fecha_valida(v, inicio)]
 
 
@@ -50,10 +50,10 @@ def resumen(ventas):
 
 
 def resumen_global():
-    return resumen(todos("ventas", "ventas"))
+    return resumen(todas_ventas())
 
 
 def resumen_hoy():
     hoy = dt.now().strftime("%d/%m/%Y")
-    ventas_hoy = [v for v in todos("ventas", "ventas") if v.get("fecha") == hoy]
+    ventas_hoy = [v for v in todas_ventas() if v.get("fecha") == hoy]
     return resumen(ventas_hoy)
