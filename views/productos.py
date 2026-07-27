@@ -93,29 +93,35 @@ class ProductosView:
         self.page.show_dialog(d)
 
     def _exportar(self):
-        def on_result(e: ft.FilePickerResultEvent):
-            if not e.path: return
-            wb = Workbook()
-            ws = wb.active; ws.title = "Inventario"
-            ws.append(["ID","Producto","Precio Compra","Precio Venta","Stock","Categoría"])
-            for p in prods.listar():
-                ws.append([p["id"], p["nombre"], p["precio_compra"],
-                          p["precio_venta"], p["stock"], p["categoria"]])
-            for col in ws.columns:
-                ws.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
-            wb.save(e.path)
-            self.page.show_dialog(ft.AlertDialog(
-                title=ft.Text("✅ Exportado"),
-                content=ft.Text(f"Guardado: {os.path.basename(e.path)}"),
-                actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
-            ))
-            self.page.update()
+        import subprocess
+        name = f"inventario_{datetime.now().strftime('%Y%m%d')}.xlsx"
+        try:
+            path = subprocess.run(
+                ["zenity", "--file-selection", "--save", "--confirm-overwrite",
+                 f"--filename={name}", "--file-filter=Excel (*.xlsx) | *.xlsx"],
+                capture_output=True, text=True, timeout=30
+            ).stdout.strip()
+        except Exception:
+            return
+        if not path:
+            return
 
-        picker = ft.FilePicker(on_result=on_result)
-        self.page.overlay.append(picker)
-        self.page.update()
-        picker.save_file(file_name=f"inventario_{datetime.now().strftime('%Y%m%d')}.xlsx",
-                         allowed_extensions=["xlsx"])
+        wb = Workbook()
+        ws = wb.active; ws.title = "Inventario"
+        ws.append(["ID","Producto","Precio Compra","Precio Venta","Stock","Categoría"])
+        for p in prods.listar():
+            ws.append([p["id"], p["nombre"], p["precio_compra"],
+                      p["precio_venta"], p["stock"], p["categoria"]])
+        for col in ws.columns:
+            ws.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
+        wb.save(path)
+
+        dlg = ft.AlertDialog(
+            title=ft.Text("✅ Exportado"),
+            content=ft.Text(f"Guardado: {os.path.basename(path)}"),
+            actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
+        )
+        self.page.show_dialog(dlg)
 
     def _formulario(self, pid=None):
         prod = prods.obtener(pid) if pid else None

@@ -21,7 +21,7 @@ class DashboardView:
                 content=ft.Column([
                     ft.Row([ft.Icon(icon, color=icon_color, size=28), ft.Container(expand=True)]),
                     ft.Text(valor, size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                    ft.Text(label, size=13, color=ft.Colors.WHITE70),
+                    ft.Text(label, size=13, color=ft.Colors.WHITE_70),
                 ], spacing=5),
                 bgcolor=bg, padding=20, border_radius=16, expand=True,
                 shadow=ft.BoxShadow(spread_radius=1, blur_radius=10, color=Colors.CARD_SHADOW),

@@ -1,8 +1,8 @@
 # Pulpería AEIE
 
-App de escritorio para gestión de pulpería, con temática de Ingeniería Eléctrica.
+App de escritorio para gestionar una pulpería
 
-## 🚀 Descarga rápida
+## 🚀 Descarga rápida (recomendado)
 
 Ve a **Releases** → descarga el `.exe` más reciente, ejecútalo y ya. Sin instalar Python ni dependencias.
 
@@ -34,13 +34,13 @@ El `.exe` generado está en `dist/Pulperia.exe`.
 
 ## ⚙️ Funcionalidades
 
-| Vista | Descripción |
-|-------|-------------|
-| **📊 Dashboard** | Resumen: productos, ventas hoy, ganancia total, pérdidas |
-| **📦 Productos** | CRUD con precios (compra/venta), stock, categorías |
-| **🧾 Venta** | Registrar efectivo o SINPE, descuenta inventario automático |
-| **⚠️ Pérdidas** | Registrar faltantes, robos, daños |
-| **📈 Reportes** | Ventas por período, desglose por método de pago, inventario valorizado, exportación a Excel |
+|     Apartado     |                             Descripción                              |
+
+| **📊 Dashboard** | Resumen: productos, ventas hoy, ganancia total, pérdidas             |
+| **📦 Productos** | CRUD con precios (compra/venta), stock, categorías                   |
+|   **🧾 Venta**   | Registrar efectivo o SINPE, descuenta inventario automático          |
+| **⚠️ Pérdidas**  | Registrar faltantes, robos, daños                                    |
+| **📈 Reportes**  | Ventas por período y forma de pago, inventario y exportación a Excel |
 
 ## 💾 Almacenamiento
 

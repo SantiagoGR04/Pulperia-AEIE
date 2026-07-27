@@ -150,44 +150,47 @@ class ReportesView:
             msg(self.page, "Sin datos", "No hay ventas en este período", "error")
             return
 
-        def on_result(e: ft.FilePickerResultEvent):
-            if not e.path: return
-            wb = Workbook()
+        import subprocess
+        name = f"reporte_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        try:
+            path = subprocess.run(
+                ["zenity", "--file-selection", "--save", "--confirm-overwrite",
+                 f"--filename={name}", "--file-filter=Excel (*.xlsx) | *.xlsx"],
+                capture_output=True, text=True, timeout=30
+            ).stdout.strip()
+        except Exception:
+            return
+        if not path:
+            return
 
-            # Hoja 1: Ventas
-            ws = wb.active; ws.title = "Ventas"
-            ws.append(["Fecha","Hora","Producto","Cantidad","Precio","Método","Subtotal","Ganancia"])
-            for v in self._filtradas:
-                ws.append([v["fecha"], v.get("hora",""), v["producto_nombre"],
-                    v["cantidad"], v["precio_unitario"], v.get("metodo_pago",""),
-                    v["subtotal"], v["ganancia"]])
-            tf = len(self._filtradas) + 2
-            ws.cell(row=tf, column=6, value="TOTALES")
-            ws.cell(row=tf, column=7, value=sum(v["subtotal"] or 0 for v in self._filtradas))
-            ws.cell(row=tf, column=8, value=sum(v["ganancia"] or 0 for v in self._filtradas))
+        wb = Workbook()
+        ws = wb.active; ws.title = "Ventas"
+        ws.append(["Fecha","Hora","Producto","Cantidad","Precio","Método","Subtotal","Ganancia"])
+        for v in self._filtradas:
+            ws.append([v["fecha"], v.get("hora",""), v["producto_nombre"],
+                v["cantidad"], v["precio_unitario"], v.get("metodo_pago",""),
+                v["subtotal"], v["ganancia"]])
+        tf = len(self._filtradas) + 2
+        ws.cell(row=tf, column=6, value="TOTALES")
+        ws.cell(row=tf, column=7, value=sum(v["subtotal"] or 0 for v in self._filtradas))
+        ws.cell(row=tf, column=8, value=sum(v["ganancia"] or 0 for v in self._filtradas))
 
-            # Hoja 2: Inventario
-            ws2 = wb.create_sheet("Inventario")
-            ws2.append(["Producto","Stock","Precio Compra","Precio Venta","Ganancia/u","Valor Total"])
-            for p in prods.listar():
-                gan_u = (p["precio_venta"] or 0) - (p["precio_compra"] or 0)
-                val_t = (p["stock"] or 0) * (p["precio_venta"] or 0)
-                ws2.append([p["nombre"], p["stock"], p["precio_compra"],
-                          p["precio_venta"], gan_u, val_t])
+        ws2 = wb.create_sheet("Inventario")
+        ws2.append(["Producto","Stock","Precio Compra","Precio Venta","Ganancia/u","Valor Total"])
+        for p in prods.listar():
+            gan_u = (p["precio_venta"] or 0) - (p["precio_compra"] or 0)
+            val_t = (p["stock"] or 0) * (p["precio_venta"] or 0)
+            ws2.append([p["nombre"], p["stock"], p["precio_compra"],
+                      p["precio_venta"], gan_u, val_t])
 
-            for ws_i in [ws, ws2]:
-                for col in ws_i.columns:
-                    ws_i.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
-            wb.save(e.path)
-            self.page.show_dialog(ft.AlertDialog(
-                title=ft.Text("✅ Exportado"),
-                content=ft.Text(f"Guardado: {os.path.basename(e.path)}"),
-                actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
-            ))
-            self.page.update()
+        for ws_i in [ws, ws2]:
+            for col in ws_i.columns:
+                ws_i.column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 3
+        wb.save(path)
 
-        picker = ft.FilePicker(on_result=on_result)
-        self.page.overlay.append(picker)
-        self.page.update()
-        picker.save_file(file_name=f"reporte_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
-                         allowed_extensions=["xlsx"])
+        dlg = ft.AlertDialog(
+            title=ft.Text("✅ Exportado"),
+            content=ft.Text(f"Guardado: {os.path.basename(path)}"),
+            actions=[ft.TextButton("OK", on_click=lambda e: self.page.pop_dialog())]
+        )
+        self.page.show_dialog(dlg)
