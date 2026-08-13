@@ -18,7 +18,7 @@ class ReportesView:
         r_mes = vtas.resumen([v for v in vtas.listar() if vtas._fecha_valida(v, datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0))])
 
         self.stats_ganancias = ft.Text(
-            f"💰 Ganancias:  Hoy: ₡{r_hoy['ganancia']:,.0f}  |  Este mes: ₡{r_mes['ganancia']:,.0f}",
+            f"💰 Ganancias:  Hoy: ₡{r_hoy['ganancia']:,.2f}  |  Este mes: ₡{r_mes['ganancia']:,.2f}",
             size=20, weight=ft.FontWeight.BOLD, color=Colors.SUCCESS
         )
         self._export_btn = ft.IconButton(ft.Icons.DOWNLOAD, icon_size=22,
@@ -59,10 +59,10 @@ class ReportesView:
                 ft.DataCell(ft.Text(p["nombre"])),
                 ft.DataCell(ft.Text(str(p["stock"]),
                     color=Colors.DANGER if (p["stock"] or 0) <= 3 else Colors.TEXT_PRIM)),
-                ft.DataCell(ft.Text(f"₡{p['precio_compra']:,.0f}")),
-                ft.DataCell(ft.Text(f"₡{p['precio_venta']:,.0f}")),
-                ft.DataCell(ft.Text(f"₡{ganancia_u:,.0f}", color=Colors.SUCCESS)),
-                ft.DataCell(ft.Text(f"₡{valor_total:,.0f}")),
+                ft.DataCell(ft.Text(f"₡{p['precio_compra']:,.2f}")),
+                ft.DataCell(ft.Text(f"₡{p['precio_venta']:,.2f}")),
+                ft.DataCell(ft.Text(f"₡{ganancia_u:,.2f}", color=Colors.SUCCESS)),
+                ft.DataCell(ft.Text(f"₡{valor_total:,.2f}")),
             ]))
         inventario_tabla.rows = inv_rows
 
@@ -128,8 +128,8 @@ class ReportesView:
 
         self.stats.value = (
             f"📊 {periodo}: {len(self._filtradas)} ventas | "
-            f"₡{r['subtotal']:,.0f} | 💰 ₡{r['ganancia']:,.0f} gana | "
-            f"💵 Efectivo: ₡{r['efectivo']:,.0f}  |  💳 SINPE: ₡{r['sinpe']:,.0f}"
+            f"₡{r['subtotal']:,.2f} | 💰 ₡{r['ganancia']:,.2f} gana | "
+            f"💵 Efectivo: ₡{r['efectivo']:,.2f}  |  💳 SINPE: ₡{r['sinpe']:,.2f}"
         )
 
         for v in reversed(self._filtradas):
@@ -138,10 +138,10 @@ class ReportesView:
                 ft.DataCell(ft.Text(v.get("hora", ""))),
                 ft.DataCell(ft.Text(v["producto_nombre"])),
                 ft.DataCell(ft.Text(str(v["cantidad"]))),
-                ft.DataCell(ft.Text(f"₡{v['precio_unitario']:,.0f}")),
+                ft.DataCell(ft.Text(f"₡{v['precio_unitario']:,.2f}")),
                 ft.DataCell(ft.Text(v.get("metodo_pago", ""))),
-                ft.DataCell(ft.Text(f"₡{v['subtotal']:,.0f}")),
-                ft.DataCell(ft.Text(f"₡{v['ganancia']:,.0f}", color=Colors.SUCCESS)),
+                ft.DataCell(ft.Text(f"₡{v['subtotal']:,.2f}")),
+                ft.DataCell(ft.Text(f"₡{v['ganancia']:,.2f}", color=Colors.SUCCESS)),
             ]))
         self.page.update()
 

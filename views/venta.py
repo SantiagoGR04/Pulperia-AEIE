@@ -57,7 +57,7 @@ class VentaView:
                 self._selected_id = pid
                 self._pv = p["precio_venta"]
                 self._pc = p["precio_compra"]
-                self.lbl_precio.value = f"Precio: ₡{self._pv:,.0f}"
+                self.lbl_precio.value = f"Precio: ₡{self._pv:,.2f}"
                 self.lbl_stock.value = f"Stock disponible: {p['stock']}"
                 self._calcular()
                 self.page.update()
@@ -69,8 +69,8 @@ class VentaView:
             c = int(self.cant.value)
             sub = c * self._pv
             gan = c * (self._pv - self._pc)
-            self.lbl_subtotal.value = f"Subtotal: ₡{sub:,.0f}"
-            self.lbl_ganancia.value = f"Ganancia: ₡{gan:,.0f}"
+            self.lbl_subtotal.value = f"Subtotal: ₡{sub:,.2f}"
+            self.lbl_ganancia.value = f"Ganancia: ₡{gan:,.2f}"
         except:
             self.lbl_subtotal.value = "Subtotal: ₡0"
             self.lbl_ganancia.value = "Ganancia: ₡0"
@@ -98,7 +98,7 @@ class VentaView:
         prods.descontar_stock(p["id"], cant)
 
         msg(self.page, "Venta registrada",
-            f"{cant}x {p['nombre']}\n{metodo}\n₡{cant * self._pv:,.0f}", "ok")
+            f"{cant}x {p['nombre']}\n{metodo}\n₡{cant * self._pv:,.2f}", "ok")
         self.combo.value = ""
         self.cant.value = ""
         self._selected_id = None

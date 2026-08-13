@@ -36,16 +36,16 @@ class DashboardView:
             ft.Divider(height=2, color=Colors.ACCENT),
             ft.Row([
                 _card(ft.Icons.INVENTORY, "Productos", str(len(prods_list)), Colors.PRIMARY),
-                _card(ft.Icons.TRENDING_UP, "Ventas hoy", f"₡{r_hoy['subtotal']:,.0f}", Colors.SUCCESS),
-                _card(ft.Icons.ACCOUNT_BALANCE, "Ganancia total", f"₡{r_global['ganancia']:,.0f}", "#1565C0"),
-                _card(ft.Icons.WARNING, "Pérdidas", f"₡{perdidas_total:,.0f}", Colors.DANGER, ft.Colors.WHITE),
+                _card(ft.Icons.TRENDING_UP, "Ventas hoy", f"₡{r_hoy['subtotal']:,.2f}", Colors.SUCCESS),
+                _card(ft.Icons.ACCOUNT_BALANCE, "Ganancia total", f"₡{r_global['ganancia']:,.2f}", "#1565C0"),
+                _card(ft.Icons.WARNING, "Pérdidas", f"₡{perdidas_total:,.2f}", Colors.DANGER, ft.Colors.WHITE),
             ], spacing=15),
             ft.Row([
                 card(ft.Column([
                     ft.Text("📋 Resumen Rápido", size=16, weight=ft.FontWeight.BOLD, color=Colors.PRIMARY),
                     ft.Divider(),
-                    ft.Text(f"💰 Efectivo hoy: ₡{r_hoy['efectivo']:,.0f}"),
-                    ft.Text(f"💳 SINPE hoy: ₡{r_hoy['sinpe']:,.0f}"),
+                    ft.Text(f"💰 Efectivo hoy: ₡{r_hoy['efectivo']:,.2f}"),
+                    ft.Text(f"💳 SINPE hoy: ₡{r_hoy['sinpe']:,.2f}"),
                     ft.Text(f"📦 Total ventas: {sum(1 for _ in vtas.listar())}"),
                 ]), expand=True),
                 card(ft.Column([

@@ -64,8 +64,8 @@ class ProductosView:
             self.tabla.rows.append(ft.DataRow([
                 ft.DataCell(ft.Text(str(p["id"]))),
                 ft.DataCell(ft.Text(p["nombre"], weight=ft.FontWeight.W_500)),
-                ft.DataCell(ft.Text(f"₡{p['precio_compra']:,.0f}")),
-                ft.DataCell(ft.Text(f"₡{p['precio_venta']:,.0f}")),
+                ft.DataCell(ft.Text(f"₡{p['precio_compra']:,.2f}")),
+                ft.DataCell(ft.Text(f"₡{p['precio_venta']:,.2f}")),
                 ft.DataCell(ft.Text(str(p["stock"]),
                     color=Colors.DANGER if (p["stock"] or 0) == 0 else Colors.TEXT_PRIM)),
                 ft.DataCell(ft.Text(p["categoria"] or "")),

@@ -47,7 +47,7 @@ class PerdidasView:
             self.tabla.rows.append(ft.DataRow([
                 ft.DataCell(ft.Text(p["producto_nombre"] or "")),
                 ft.DataCell(ft.Text(str(p["cantidad"] or ""))),
-                ft.DataCell(ft.Text(f"₡{p['monto_estimado']:,.0f}" if p['monto_estimado'] else "₡0")),
+                ft.DataCell(ft.Text(f"₡{p['monto_estimado']:,.2f}" if p['monto_estimado'] else "₡0")),
                 ft.DataCell(ft.Text(p["motivo"] or "")),
                 ft.DataCell(ft.Text(p["fecha"][:10] if p["fecha"] else "")),
             ]))
