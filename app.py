@@ -1,14 +1,22 @@
 """Pulpería AEIE - App de escritorio para gestión de pulpería
 """
+import os
+import sys
 import flet as ft
 from database.excel_db import inicializar
-from config import APP_NAME, APP_WIDTH, APP_HEIGHT
+from config import APP_NAME, APP_WIDTH, APP_HEIGHT, PROJECT_ROOT
 from theme import Colors
 from views.dashboard import DashboardView
 from views.productos import ProductosView
 from views.venta import VentaView
 from views.perdidas import PerdidasView
 from views.reportes import ReportesView
+
+
+def _logo_path():
+    """Ruta absoluta al logo; funciona en dev y en exe (onefile/onedir)."""
+    base = getattr(sys, "_MEIPASS", PROJECT_ROOT)
+    return os.path.join(base, "images", "logo_aeie.png")
 
 
 def main(page: ft.Page):
@@ -51,7 +59,7 @@ def main(page: ft.Page):
         content=ft.Column([
             ft.Container(
                 content=ft.Column([
-                    ft.Image(src="images/logo_aeie.png"),
+                    ft.Image(src=_logo_path()),
                     ft.Text("Pulpería AEIE", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                 ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
                 padding=20, bgcolor=Colors.PRIMARY,
