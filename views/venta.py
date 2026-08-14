@@ -64,7 +64,7 @@ class VentaView:
             size=14
         )
 
-        metodo = ft.Dropdown(
+        self.metodo = ft.Dropdown(
             label="Método de pago",
             width=400,
             options=[
@@ -72,6 +72,19 @@ class VentaView:
                 ft.dropdown.Option("SINPE")
             ],
             value="Efectivo",
+            on_select=self._cambiar_metodo,
+        )
+        self.efectivo_recibido = ft.TextField(
+            label="Dinero recibido",
+            width=400,
+            keyboard_type=ft.KeyboardType.NUMBER,
+            on_change=self._calcular_vuelto,
+        )
+        self.vuelto = ft.Text(
+            "Vuelto: ₡0",
+            size=16,
+            weight=ft.FontWeight.BOLD,
+            color=Colors.SUCCESS
         )
 
         form.controls = [
@@ -86,17 +99,21 @@ class VentaView:
             self.cant,
             self.lbl_subtotal,
             self.lbl_ganancia,
-            metodo,
-
+            self.metodo,
+            self.efectivo_recibido,
+            self.vuelto,
             ft.Button(
                 content=ft.Text("💵 Registrar Venta"),
                 style=ft.ButtonStyle(
                     bgcolor=Colors.SUCCESS,
                     color=ft.Colors.WHITE
                 ),
-                on_click=lambda e: self._registrar(metodo.value)
+                on_click=lambda e: self._registrar(self.metodo.value)
             ),
         ]
+
+        # Estado inicial: mostrar/ocultar según método seleccionado
+        self._cambiar_metodo(None)
 
         return ft.Column(
             [
@@ -158,6 +175,7 @@ class VentaView:
         self.lbl_stock.value = "Stock disponible: —"
         self.lbl_subtotal.value = "Subtotal: ₡0"
         self.lbl_ganancia.value = "Ganancia: ₡0"
+        self.vuelto.value = "Vuelto: ₡0"
 
         self.page.update()
 
@@ -193,6 +211,47 @@ class VentaView:
         except:
             self.lbl_subtotal.value = "Subtotal: ₡0"
             self.lbl_ganancia.value = "Ganancia: ₡0"
+
+        self._calcular_vuelto()
+
+    def _calcular_vuelto(self, e=None):
+        # En Flet 0.86.5, el valor actualizado viene en e.control.value;
+        # leer self.efectivo_recibido.value puede quedar desincronizado.
+        if e is not None:
+            valor = e.control.value if hasattr(e, "control") else self.efectivo_recibido.value
+        else:
+            valor = self.efectivo_recibido.value
+
+        try:
+            recibido = int(valor)
+        except (ValueError, TypeError):
+            self.vuelto.value = "Vuelto: ₡0"
+            self.page.update()
+            return
+
+        sub = int(self.cant.value or 0) * self._pv
+
+        if self.metodo.value == "Efectivo":
+            if recibido < sub:
+                self.vuelto.value = "Dinero recibido insuficiente"
+                self.vuelto.color = Colors.DANGER
+            else:
+                v = recibido - sub
+                self.vuelto.value = f"Vuelto: ₡{v:,.0f}"
+                self.vuelto.color = Colors.SUCCESS
+        else:
+            self.vuelto.value = "Vuelto: ₡0"
+            self.vuelto.color = Colors.SUCCESS
+
+        self.page.update()
+
+    def _cambiar_metodo(self, e):
+        es_efectivo = self.metodo.value == "Efectivo"
+        self.efectivo_recibido.visible = es_efectivo
+        self.vuelto.visible = es_efectivo
+        if es_efectivo:
+            self._calcular_vuelto()
+        self.page.update()
 
     def _registrar(self, metodo):
         if self._selected_id is None:
@@ -233,13 +292,39 @@ class VentaView:
             )
             return
 
-        vtas.registrar(
+        if metodo == "Efectivo":
+            try:
+                recibido = int(self.efectivo_recibido.value)
+            except (ValueError, TypeError):
+                msg(
+                    self.page,
+                    "Error",
+                    "Indica cuánto dinero recibiste",
+                    "error"
+                )
+                return
+
+            subtotal = cant * self._pv
+
+            if recibido < subtotal:
+                msg(
+                    self.page,
+                    "Efectivo insuficiente",
+                    f"Faltan ₡{subtotal - recibido:,.0f}",
+                    "error"
+                )
+                return
+        else:
+            recibido = 0
+
+        _, vuelto = vtas.registrar(
             p["id"],
             p["nombre"],
             cant,
             self._pv,
             self._pc,
-            metodo
+            metodo,
+            recibido
         )
 
         prods.descontar_stock(
@@ -247,12 +332,15 @@ class VentaView:
             cant
         )
 
+        detalle = f"{cant}x {p['nombre']}\n{metodo}\n₡{cant * self._pv:,.0f}"
+
+        if metodo == "Efectivo":
+            detalle += f"\nRecibido: ₡{recibido:,.0f}\nVuelto: ₡{vuelto:,.0f}"
+
         msg(
             self.page,
             "Venta registrada",
-            f"{cant}x {p['nombre']}\n"
-            f"{metodo}\n"
-            f"₡{cant * self._pv:,.0f}",
+            detalle,
             "ok"
         )
 
@@ -260,6 +348,8 @@ class VentaView:
         self.combo.value = None
         self.buscar.value = ""
         self.cant.value = ""
+        self.efectivo_recibido.value = ""
+        self.vuelto.value = "Vuelto: ₡0"
 
         self._selected_id = None
 

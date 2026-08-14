@@ -3,9 +3,10 @@ from datetime import datetime as dt
 from database.excel_db import todas_ventas, insertar_venta
 
 
-def registrar(pid, nombre, cantidad, precio_venta, precio_compra, metodo_pago):
+def registrar(pid, nombre, cantidad, precio_venta, precio_compra, metodo_pago, efectivo_recibido):
     subtotal = cantidad * precio_venta
     ganancia = cantidad * (precio_venta - precio_compra)
+    vuelto = efectivo_recibido - subtotal if metodo_pago == "Efectivo" else 0
     ventas = todas_ventas()
     nid = max((v["id"] for v in ventas), default=0) + 1
     ahora = dt.now()
@@ -15,7 +16,7 @@ def registrar(pid, nombre, cantidad, precio_venta, precio_compra, metodo_pago):
         nid, pid, nombre, cantidad, precio_venta,
         subtotal, ganancia, metodo_pago, fecha, hora
     ])
-    return nid
+    return nid,vuelto
 
 
 def listar():
