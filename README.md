@@ -28,12 +28,11 @@ python app.py
 ```bash
 pip install pyinstaller
 
-.\.venv\Scripts\python -m PyInstaller --onefile --name PulperiaAEIE `
+.\.venv\Scripts\python -m PyInstaller --onefile --noconsole --name PulperiaAEIE `
   --icon images\logo_aeie.ico `
   --add-data "images;images" `
   --hidden-import flet `
-  --hidden-import flet.controls.material.textfield `
-  --hidden-import flet.controls.material.dropdown `
+  --hidden-import flet.controls `
   --hidden-import openpyxl `
   app.py
 ```
