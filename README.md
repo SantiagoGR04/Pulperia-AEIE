@@ -27,10 +27,18 @@ python app.py
 
 ```bash
 pip install pyinstaller
-flet pack app.py -n Pulperia --hidden-import openpyxl -y
+
+.\.venv\Scripts\python -m PyInstaller --onefile --name PulperiaAEIE `
+  --icon images\logo_aeie.ico `
+  --add-data "images;images" `
+  --hidden-import flet `
+  --hidden-import flet.controls.material.textfield `
+  --hidden-import flet.controls.material.dropdown `
+  --hidden-import openpyxl `
+  app.py
 ```
 
-El `.exe` generado está en `dist/Pulperia.exe`.
+El `.exe` generado está en `dist/PulperiaAEIE.exe`.
 
 ## ⚙️ Funcionalidades
 
